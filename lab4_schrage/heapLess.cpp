@@ -5,59 +5,48 @@
 #include "Task.h"
 using namespace std;
 
+#include "heapmax1.h"
+#include "heapminr.h"
+
 int Schrage(int n, Task* T, int* perm)
 {
-	int ND[100], D[100];
-	int nd = n, d = 0, w = 0;
-	int  t = 0, cmax = 0;
-	for (int i = 0; i < n; i++)
-	{
-		ND[i] = i;
-	}
-	for (int i = 0; i < n - 1; i++)
-	{
-		for (int j = 0; j < n - 1; j++)
-		{
-			if (T[ND[j]].r < T[ND[j + 1]].r)
-			{
-				swap(ND[j], ND[j + 1]);
-			}
-		}
-	}
-	while (w != n)
-	{
-		if (nd != 0)
-		{	
-			if (T[ND[nd - 1]].r <= t)
-			{
-				D[d] = ND[nd - 1];
-				d++;
-				nd--;
-				for (int k = d - 1; k > 0; k--)
-				{
-					if (T[D[k]].q < T[D[k - 1]].q)
-					{
-						swap(D[k], D[k - 1]);
-					}
-				}
-				continue;
-			}
-		}
-		if (d != 0)
-		{
-			perm[w] = D[d - 1];
-			t += T[perm[w]].p;
-			cmax = max(cmax, t + T[perm[w]].q);
-			d--;
-			w++;
-			continue;
-		}
-		if (d == 0 && T[ND[nd - 1]].r > t)
-		{
-			t = T[ND[nd - 1]].r;
-		}
-	}
-	return cmax;
+    HeapMax1 ND(n);
+    HeapMinR D(n);
+    int w = 0, t = 0, cmax = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        ND.push(T[i]);
+    }
+
+    while (!ND.isEmpty() || !D.isEmpty())
+    {
+        while (!ND.isEmpty() && ND.top().r <= t)
+        {
+            D.push(ND.top());
+            ND.pop();
+        }
+
+        if (!D.isEmpty())
+        {
+            Task task = D.top();
+            D.pop();
+            perm[w] = task.id;
+            t += task.p;
+            cmax = max(cmax, t + task.q);
+            w++;
+        }
+        else if (!ND.isEmpty())
+        {
+            t = ND.top().r;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return cmax;
 }
 int prmtSchrage(int n, Task* T)
 {

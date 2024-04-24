@@ -4,8 +4,8 @@
 class HeapMaxQ {
 private:
     Task* heapArray;
+
     int capacity;
-    int heapSize;  
 
     void swap(Task& a, Task& b) {
         Task temp = a;
@@ -39,6 +39,8 @@ private:
     }
 
 public:
+    
+    int heapSize; 
     HeapMaxQ(int maxCapacity) {
         capacity = maxCapacity;
         heapArray = new Task[capacity + 1];
@@ -58,13 +60,19 @@ public:
         shiftUp(heapSize);
     }
 
-    void pop() {
-        if (heapSize <= 0) {
-            std::cerr << "Heap underflow: Cannot remove elements from an empty heap.\n";
-            return;
-        }
-        swap(heapArray[1], heapArray[heapSize--]);
-        shiftDown(1);
+    Task pop() {
+    //    if (heapSize <= 0) {
+    //        std::cerr << "Heap underflow: Cannot remove elements from an empty heap.\n";
+    //        return;
+    //    }
+       Task result = heapArray[1];
+       swap(heapArray[1], heapArray[heapSize--]);
+       shiftDown(1);
+       return result;
+    }
+
+    Task returnTop() {
+        return heapArray[1];
     }
 
     void printHeap() const {

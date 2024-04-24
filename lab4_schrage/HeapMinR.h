@@ -5,7 +5,7 @@ class HeapMinR {
 private:
     Task* heapArray;
     int capacity;
-    int heapSize;
+    
 
     void swap(Task& a, Task& b) {
         Task temp = a;
@@ -16,9 +16,9 @@ private:
     void shiftDown(int node) {
         int next = 2 * node;
         while (next <= heapSize) {
-            if ((next < heapSize) && (heapArray[next].q > heapArray[next + 1].q))
+            if ((next < heapSize) && (heapArray[next].r > heapArray[next + 1].r))
                 next++;
-            if (heapArray[node].q > heapArray[next].q) {
+            if (heapArray[node].r > heapArray[next].r) {
                 swap(heapArray[node], heapArray[next]);
                 node = next;
                 next *= 2;
@@ -31,7 +31,7 @@ private:
 
     void shiftUp(int node) {
         int next = node / 2;
-        while ((node > 1) && (heapArray[next].q > heapArray[node].q)) {
+        while ((node > 1) && (heapArray[next].r > heapArray[node].r)) {
             swap(heapArray[node], heapArray[next]);
             node = next;
             next /= 2;
@@ -39,6 +39,7 @@ private:
     }
 
 public:
+    int heapSize;
     HeapMinR(int maxCapacity) {
         capacity = maxCapacity;
         heapArray = new Task[capacity + 1];
@@ -58,19 +59,25 @@ public:
         shiftUp(heapSize);
     }
 
-    void pop() {
-        if (heapSize <= 0) {
-            std::cerr << "Heap underflow: Cannot remove elements from an empty heap.\n";
-            return;
-        }
-        swap(heapArray[1], heapArray[heapSize--]);
-        shiftDown(1);
+    Task pop() {
+    //    if (heapSize <= 0) {
+    //        std::cerr << "Heap underflow: Cannot remove elements from an empty heap.\n";
+    //        return null;
+    //    }
+       Task result = heapArray[1];
+       swap(heapArray[1], heapArray[heapSize--]);
+       shiftDown(1);
+       return result;
+    }
+
+    Task returnTop() {
+        return heapArray[1];
     }
 
     void printHeap() const {
         std::cout << "Heap elements: ";
         for (int i = 1; i <= heapSize; i++) {
-            std::cout << heapArray[i].ID << " ";
+            std::cout << heapArray[i].ID << " [r:" << heapArray[i].r << ",p:" << heapArray[i].p << ",q:" << heapArray[i].q << "\t";
         }
         std::cout << std::endl;
     }
